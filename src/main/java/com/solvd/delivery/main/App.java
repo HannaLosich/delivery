@@ -1,105 +1,407 @@
 package com.solvd.delivery.main;
 
+import com.solvd.delivery.enums.TicketPriority;
+import com.solvd.delivery.enums.TicketStatus;
 import com.solvd.delivery.models.*;
-import com.solvd.delivery.enums.*;
+import com.solvd.delivery.mysqlImpl.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-    // Sample lists to hold created objects
-    public List<User> User = new ArrayList<>();
-    public List<Address> Address = new ArrayList<>();
-    public List<Product> Product = new ArrayList<>();
-    public List<Warehouse> Warehouse = new ArrayList<>();
-    public List<Inventory> inventoryList = new ArrayList<>();
-    public List<Order> Order = new ArrayList<>();
-    public List<OrderItem> OrderItem = new ArrayList<>();
-    public List<Payment> Payment = new ArrayList<>();
-    public List<PaymentTransaction> transactions = new ArrayList<>();
-    public List<Shipment> Shipment = new ArrayList<>();
-    public List<Courier> Courier = new ArrayList<>();
-    public List<Tracking> trackingList = new ArrayList<>();
-    public List<Review> Review = new ArrayList<>();
-    public List<SupportTicket> tickets = new ArrayList<>();
-    public List<TicketMessage> TicketMessage = new ArrayList<>();
-    public List<Promotion> Promotion = new ArrayList<>();
-    public List<OrderPromotion> orderPromotion = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger(App.class);
 
     public App() {
-        initData();
+        logger.info("🚀 Starting Delivery Service App...");
+        testDAOs();
     }
 
-    private void initData() {
-        // User
-        User user1 = new User(1L, "Alice", "Smith", "alice@example.com", "+1234567890");
-        User user2 = new User(2L, "Bob", "Johnson", "bob@example.com", "+1987654321");
-        User.add(user1);
-        User.add(user2);
+    private void testDAOs() {
+        testUserDAO();
+        testAddressDAO();
+        testProductDAO();
+        testOrderDAO();
+        testOrderItemDAO();
+        testPaymentDAO();
+        testPaymentTransactionDAO();
+        testPromotionDAO();
+        testOrderPromotionDAO();
+        testShipmentDAO();
+        testTrackingDAO();
+        testInventoryDAO();
+        testReviewDAO();
+        testCourierDAO();
+    }
 
-        // Address
-        Address.add(new Address(1L, "123 Main St", "New York", "NY", "USA", "10001", 1L));
-        Address.add(new Address(2L, "456 Market St", "San Francisco", "CA", "USA", "94105", 2L));
+    private void testUserDAO() {
+        logger.info("===== Testing UserDAO =====");
+        UserDAO dao = new UserDAO();
+        dao.getAll().forEach(u -> logger.info(
+                "User: ID={}, FirstName={}, LastName={}, Email={}, Phone={}",
+                u.getId(), u.getFirstName(), u.getLastName(), u.getEmail(), u.getPhoneNumber()
+        ));
+    }
 
-        // Product
-        Product.add(new Product(1L, "Wireless Mouse", "Ergonomic mouse", 29.99, "MOUSE-001"));
-        Product.add(new Product(2L, "Mechanical Keyboard", "RGB keyboard", 79.99, "KEYB-001"));
+    private void testAddressDAO() {
+        logger.info("===== Testing AddressDAO =====");
+        AddressDAO dao = new AddressDAO();
+        dao.getAll().forEach(a -> logger.info(
+                "Address: ID={}, Street={}, City={}, UserID={}",
+                a.getId(), a.getStreet(), a.getCity(), a.getUserId()
+        ));
+    }
 
-        // Warehouse
-        Warehouse.add(new Warehouse(1L, "East Coast Warehouse", "New Jersey"));
-        Warehouse.add(new Warehouse(2L, "West Coast Warehouse", "California"));
+    private void testProductDAO() {
+        logger.info("===== Testing ProductDAO =====");
+        ProductDAO dao = new ProductDAO();
+        dao.getAll().forEach(p -> logger.info(
+                "Product: ID={}, Name={}, Price={}",
+                p.getId(), p.getName(), p.getPrice()
+        ));
+    }
 
-        // Inventory
-        inventoryList.add(new Inventory(1L, 200, LocalDateTime.now(), 1L, 1L));
-        inventoryList.add(new Inventory(2L, 150, LocalDateTime.now(), 2L, 2L));
+    private void testOrderDAO() {
+        logger.info("===== Testing OrderDAO =====");
+        OrderDAO dao = new OrderDAO();
+        dao.getAll().forEach(o -> logger.info(
+                "Order: ID={}, Date={}, StatusID={}, StatusLabel={}, TotalAmount={}, UserID={}, AddressID={}",
+                o.getId(),
+                o.getOrderDate(),
+                o.getStatus().getId(),
+                o.getStatus().getLabel(),
+                o.getTotalAmount(),
+                o.getUserId(),
+                o.getAddressId()
+        ));
+    }
 
-        // Order
-        Order.add(new Order(1L, LocalDateTime.now(), OrderStatus.PENDING, 109.98, 1L, 1L));
-        Order.add(new Order(2L, LocalDateTime.now(), OrderStatus.SHIPPED, 29.99, 2L, 2L));
+    private void testOrderItemDAO() {
+        logger.info("===== Testing OrderItemDAO =====");
+        OrderItemDAO dao = new OrderItemDAO();
+        dao.getAll().forEach(oi -> logger.info(
+                "OrderItem: ID={}, Quantity={}, UnitPrice={}, OrderID={}, ProductID={}",
+                oi.getId(), oi.getQuantity(), oi.getUnitPrice(), oi.getOrderId(), oi.getProductId()
+        ));
+    }
 
-        // Order Items
-        OrderItem.add(new OrderItem(1L, 2, 29.99, 1L, 1L));
-        OrderItem.add(new OrderItem(2L, 1, 79.99, 1L, 2L));
-        OrderItem.add(new OrderItem(3L, 1, 29.99, 2L, 1L));
+    private void testPaymentDAO() {
+        logger.info("===== Testing PaymentDAO =====");
+        PaymentDAO dao = new PaymentDAO();
+        dao.getAll().forEach(p -> logger.info(
+                "Payment: ID={}, Amount={}, MethodID={}, MethodLabel={}, Date={}, OrderID={}",
+                p.getId(),
+                p.getAmount(),
+                p.getPaymentMethod().getId(),
+                p.getPaymentMethod().getLabel(),
+                p.getPaymentDate(),
+                p.getOrderId()
+        ));
+    }
 
-        // Payment
-        Payment.add(new Payment(1L, 109.98, PaymentMethod.CREDIT_CARD, LocalDateTime.now(), 1L));
-        Payment.add(new Payment(2L, 29.99, PaymentMethod.PAYPAL, LocalDateTime.now(), 2L));
+    private void testPaymentTransactionDAO() {
+        logger.info("===== Testing PaymentTransactionDAO =====");
+        PaymentTransactionDAO dao = new PaymentTransactionDAO();
+        dao.getAll().forEach(t -> logger.info(
+                "Transaction: ID={}, Ref={}, Date={}, StatusID={}, StatusLabel={}, PaymentID={}",
+                t.getId(),
+                t.getTransactionReference(),
+                t.getTransactionDate(),
+                t.getStatus().getId(),
+                t.getStatus().getLabel(),
+                t.getPaymentId()
+        ));
+    }
 
-        // Payment Transactions
-        transactions.add(new PaymentTransaction(1L, "TXN123ABC", LocalDateTime.now(), TransactionStatus.SUCCESS, 1L));
-        transactions.add(new PaymentTransaction(2L, "TXN456XYZ", LocalDateTime.now(), TransactionStatus.SUCCESS, 2L));
+    private void testPromotionDAO() {
+        logger.info("===== Testing PromotionDAO =====");
+        PromotionDAO dao = new PromotionDAO();
+        dao.getAll().forEach(p -> logger.info(
+                "Promotion: ID={}, Code={}, TypeID={}, TypeLabel={}, Value={}, Start={}, End={}",
+                p.getId(),
+                p.getCode(),
+                p.getDiscountType().getId(),
+                p.getDiscountType().getLabel(),
+                p.getDiscountValue(),
+                p.getStartDate(),
+                p.getEndDate()
+        ));
+    }
 
-        // Shipment
-        Shipment.add(new Shipment(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), ShipmentStatus.DELAYED, 1L));
-        Shipment.add(new Shipment(2L, LocalDateTime.now(), LocalDateTime.now().plusDays(3), ShipmentStatus.DELAYED, 2L));
+    private void testOrderPromotionDAO() {
+        logger.info("===== Testing OrderPromotionDAO =====");
+        OrderPromotionDAO dao = new OrderPromotionDAO();
 
-        // Courier
-        Courier.add(new Courier(1L, "FastExpress", "+1111111111", "support@fastexpress.com", 1L, 1L));
-        Courier.add(new Courier(2L, "QuickShip", "+2222222222", "help@quickship.com", 2L, 2L));
+        // Create
+        OrderPromotion newOP = new OrderPromotion(0, 1, 2);
+        dao.insert(newOP);
+        logger.info("Inserted OrderPromotion with ID={}", newOP.getId());
 
-        // Tracking
-        trackingList.add(new Tracking(1L, "TRK123456", TrackingStatus.PROCESSING, LocalDateTime.now(), 1L));
-        trackingList.add(new Tracking(2L, "TRK789012", TrackingStatus.PROCESSING, LocalDateTime.now(), 2L));
+        // Read
+        OrderPromotion fetched = dao.getById(newOP.getId());
+        if (fetched != null) {
+            logger.info("Fetched OrderPromotion: OrderID={}, PromotionID={}",
+                    fetched.getOrderId(), fetched.getPromotionId());
+        }
 
-        // Review
-        Review.add(new Review(1L, 5, "Great delivery service!", LocalDateTime.now(), 2L, 1L));
+        // Update
+        fetched.setPromotionId(1);
+        dao.update(fetched);
+        OrderPromotion updated = dao.getById(fetched.getId());
+        logger.info("Updated OrderPromotion: OrderID={}, PromotionID={}",
+                updated.getOrderId(), updated.getPromotionId());
 
-        // Support Tickets
-        tickets.add(new SupportTicket (1L, "Order not delivered", TicketStatus.OPEN, TicketPriority.HIGH, LocalDateTime.now(), LocalDateTime.now(), 1L));
-        tickets.add(new SupportTicket (2L, "Payment issue", TicketStatus.PROCESSING, TicketPriority.MEDIUM, LocalDateTime.now(), LocalDateTime.now(), 2L));
+        // Delete
+        dao.removeById(newOP.getId());
+        logger.info("Deleted OrderPromotion with ID={}", newOP.getId());
 
-        // Ticket Messages
-        TicketMessage.add(new TicketMessage(1L, "Where is my order?", LocalDateTime.now(), 1L));
-        TicketMessage.add(new TicketMessage(2L, "My payment failed.", LocalDateTime.now(), 2L));
+        // List all
+        dao.getAll().forEach(op -> logger.info(
+                "OrderPromotion: ID={}, OrderID={}, PromotionID={}",
+                op.getId(), op.getOrderId(), op.getPromotionId()
+        ));
+    }
 
-        // Promotion
-        Promotion.add(new Promotion(1L, "SUMMER10", "10% off summer sale", DiscountType.PERCENTAGE, 10.0, LocalDateTime.of(2025,6,1,0,0), LocalDateTime.of(2025,8,31,23,59)));
-        Promotion.add(new Promotion(2L, "WELCOME5", "5 USD off first order", DiscountType.FIXED_AMOUNT, 5.0, LocalDateTime.of(2025,1,1,0,0), LocalDateTime.of(2025,12,31,23,59)));
+    private void testShipmentDAO() {
+        logger.info("===== Testing ShipmentDAO =====");
+        ShipmentDAO dao = new ShipmentDAO();
+        dao.getAll().forEach(s -> logger.info(
+                "Shipment: ID={}, ShipmentDate={}, DeliveryDate={}, StatusID={}, StatusLabel={}, OrderID={}",
+                s.getId(),
+                s.getShipmentDate(),
+                s.getDeliveryDate(),
+                s.getStatus().getId(),
+                s.getStatus().getLabel(),
+                s.getOrderId()
+        ));
+    }
 
-        // Order Promotion
-        orderPromotion.add(new OrderPromotion(1L, 1L, 1L));
-        orderPromotion.add(new OrderPromotion(2L, 2L, 2L));
+    private void testSupportTicketDAO() {
+        logger.info("===== Testing SupportTicketDAO =====");
+        SupportTicketDAO dao = new SupportTicketDAO();
+
+        // Create
+        SupportTicket newTicket = new SupportTicket(0, "Login issue",
+                TicketStatus.OPEN, TicketPriority.HIGH,
+                LocalDateTime.now(), LocalDateTime.now(), 1);
+        dao.insert(newTicket);
+        logger.info("Inserted SupportTicket with ID={}", newTicket.getId());
+
+        // Read
+        SupportTicket fetched = dao.getById(newTicket.getId());
+        if (fetched != null) {
+            logger.info("Fetched Ticket: Subject={}, StatusID={}, StatusLabel={}, PriorityID={}, PriorityLabel={}, UserID={}",
+                    fetched.getSubject(),
+                    fetched.getStatus().getId(),
+                    fetched.getStatus().getLabel(),
+                    fetched.getPriority().getId(),
+                    fetched.getPriority().getLabel(),
+                    fetched.getUserId()
+            );
+        }
+
+        // Update
+        fetched.setStatus(TicketStatus.IN_PROGRESS);
+        dao.update(fetched);
+        SupportTicket updated = dao.getById(fetched.getId());
+        logger.info("Updated Ticket: ID={}, StatusID={}, StatusLabel={}",
+                updated.getId(),
+                updated.getStatus().getId(),
+                updated.getStatus().getLabel()
+        );
+
+        // Delete
+        dao.removeById(newTicket.getId());
+        logger.info("Deleted SupportTicket with ID={}", newTicket.getId());
+
+        // List all
+        dao.getAll().forEach(t -> logger.info(
+                "Ticket: ID={}, Subject={}, Status={}, Priority={}, UserID={}",
+                t.getId(), t.getSubject(), t.getStatus().getLabel(), t.getPriority().getLabel(), t.getUserId()
+        ));
+    }
+
+
+    private void testTicketMessageDAO() {
+        logger.info("===== Testing TicketMessageDAO =====");
+        TicketMessageDAO dao = new TicketMessageDAO();
+
+        TicketMessage message = new TicketMessage(0, "This is a test message", LocalDateTime.now(), 1);
+        dao.insert(message);
+        logger.info("Inserted TicketMessage with ID={}", message.getId());
+
+        TicketMessage fetched = dao.getById(message.getId());
+        if (fetched != null) {
+            logger.info("Fetched TicketMessage: ID={}, Text={}, UserID={}",
+                    fetched.getId(), fetched.getMessageText(), fetched.getUserId());
+        }
+
+        message.setMessageText("Updated message text");
+        dao.update(message);
+        logger.info("Updated TicketMessage: ID={}, Text={}", message.getId(), message.getMessageText());
+
+        dao.removeById(message.getId());
+        logger.info("Deleted TicketMessage with ID={}", message.getId());
+
+        dao.getAll().forEach(m -> logger.info(
+                "TicketMessage: ID={}, Text={}, UserID={}",
+                m.getId(), m.getMessageText(), m.getUserId()
+        ));
+    }
+
+    private void testWarehouseDAO() {
+        logger.info("===== Testing WarehouseDAO =====");
+        WarehouseDAO dao = new WarehouseDAO();
+
+        Warehouse warehouse = new Warehouse(0, "Main Warehouse", "New York");
+        dao.insert(warehouse);
+        logger.info("Inserted Warehouse with ID={}", warehouse.getId());
+
+        Warehouse fetched = dao.getById(warehouse.getId());
+        if (fetched != null) {
+            logger.info("Fetched Warehouse: ID={}, Name={}, Location={}", fetched.getId(), fetched.getName(), fetched.getLocation());
+        }
+
+        warehouse.setLocation("San Francisco");
+        dao.update(warehouse);
+        logger.info("Updated Warehouse: ID={}, Name={}, Location={}", warehouse.getId(), warehouse.getName(), warehouse.getLocation());
+
+        dao.removeById(warehouse.getId());
+        logger.info("Deleted Warehouse with ID={}", warehouse.getId());
+
+        dao.getAll().forEach(w -> logger.info(
+                "Warehouse: ID={}, Name={}, Location={}", w.getId(), w.getName(), w.getLocation()
+        ));
+    }
+
+
+
+    private void testTrackingDAO() {
+        logger.info("===== Testing TrackingDAO =====");
+        TrackingDAO dao = new TrackingDAO();
+        dao.getAll().forEach(t -> logger.info(
+                "Tracking: ID={}, Number={}, StatusID={}, StatusLabel={}, LastUpdate={}, ShipmentID={}",
+                t.getId(),
+                t.getTrackingNumber(),
+                t.getStatus().getId(),
+                t.getStatus().getLabel(),
+                t.getLastUpdate(),
+                t.getShipmentId()
+        ));
+    }
+
+    private void testInventoryDAO() {
+        logger.info("===== Testing InventoryDAO =====");
+        InventoryDAO dao = new InventoryDAO();
+
+        // Create
+        Inventory newInventory = new Inventory(0, 100, LocalDateTime.now(), 1, 1);
+        dao.insert(newInventory);
+        logger.info("Inserted Inventory with ID={}", newInventory.getId());
+
+        // Read
+        Inventory fetched = dao.getById(newInventory.getId());
+        if (fetched != null) {
+            logger.info("Fetched Inventory: Stock={}, WarehouseID={}, ProductID={}",
+                    fetched.getStockQuantity(),
+                    fetched.getWarehouseId(),
+                    fetched.getProductId()
+            );
+        }
+
+        // Update
+        fetched.setStockQuantity(150);
+        dao.update(fetched);
+        Inventory updated = dao.getById(fetched.getId());
+        logger.info("Updated Inventory: ID={}, Stock={}", updated.getId(), updated.getStockQuantity());
+
+        // Delete
+        dao.removeById(newInventory.getId());
+        logger.info("Deleted Inventory with ID={}", newInventory.getId());
+
+        // List all
+        dao.getAll().forEach(i -> logger.info(
+                "Inventory: ID={}, Stock={}, WarehouseID={}, ProductID={}",
+                i.getId(), i.getStockQuantity(), i.getWarehouseId(), i.getProductId()
+        ));
+    }
+    private void testReviewDAO() {
+        logger.info("===== Testing ReviewDAO =====");
+        ReviewDAO dao = new ReviewDAO();
+
+        // Create
+        Review newReview = new Review(0, 5, "Excellent delivery!", LocalDateTime.now(), 1, 1);
+        dao.insert(newReview);
+        logger.info("Inserted Review with ID={}", newReview.getId());
+
+        // Read
+        Review fetched = dao.getById(newReview.getId());
+        if (fetched != null) {
+            logger.info("Fetched Review: Rating={}, Comment={}, UserID={}, ShipmentID={}",
+                    fetched.getRating(),
+                    fetched.getComment(),
+                    fetched.getUserId(),
+                    fetched.getShipmentId()
+            );
+        }
+
+        // Update
+        fetched.setComment("Very fast delivery!");
+        dao.update(fetched);
+        Review updated = dao.getById(fetched.getId());
+        logger.info("Updated Review: ID={}, Comment={}", updated.getId(), updated.getComment());
+
+        // Delete
+        dao.removeById(newReview.getId());
+        logger.info("Deleted Review with ID={}", newReview.getId());
+
+        // List all
+        dao.getAll().forEach(r -> logger.info(
+                "Review: ID={}, Rating={}, Comment={}, UserID={}, ShipmentID={}",
+                r.getId(), r.getRating(), r.getComment(), r.getUserId(), r.getShipmentId()
+        ));
+    }
+
+    private void testCourierDAO() {
+        System.out.println("===== Testing CourierDAO =====");
+
+        CourierDAO courierDAO = new CourierDAO();
+
+        // Insert
+        Courier newCourier = new Courier();
+        newCourier.setName("SpeedyDelivery");
+        newCourier.setContactNumber("+3333333333");
+        newCourier.setEmail("contact@speedydelivery.com");
+        newCourier.setShipmentId(1);
+        newCourier.setUserId(1);
+
+        courierDAO.insert(newCourier);
+        System.out.println("Inserted Courier with ID=" + newCourier.getId());
+
+        // Get by ID
+        Courier fetched = courierDAO.getById(newCourier.getId());
+        System.out.println("Fetched Courier: Name=" + fetched.getName() + ", Email=" + fetched.getEmail());
+
+        // Update
+        fetched.setName("SpeedyDelivery Updated");
+        courierDAO.update(fetched);
+        System.out.println("Updated Courier: Name=" + courierDAO.getById(fetched.getId()).getName());
+
+        // Get all
+        List<Courier> allCouriers = courierDAO.getAll();
+        for (Courier c : allCouriers) {
+            System.out.println("Courier: ID=" + c.getId() + ", Name=" + c.getName());
+        }
+
+        // Delete
+        courierDAO.removeById(newCourier.getId());
+        System.out.println("Deleted Courier with ID=" + newCourier.getId());
+    }
+
+
+
+    public static void main(String[] args) {
+        new App();
     }
 }
