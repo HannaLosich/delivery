@@ -15,7 +15,8 @@ public class SupportTicket {
 
     public SupportTicket() {}
 
-    public SupportTicket(long id, String subject, TicketStatus status, TicketPriority priority, LocalDateTime createdAt, LocalDateTime updatedAt, long userId) {
+    public SupportTicket(long id, String subject, TicketStatus status, TicketPriority priority,
+                         LocalDateTime createdAt, LocalDateTime updatedAt, long userId) {
         this.id = id;
         this.subject = subject;
         this.status = status;

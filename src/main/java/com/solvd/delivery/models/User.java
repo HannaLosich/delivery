@@ -31,4 +31,9 @@ public class User {
 
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    // New helper method
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 }
