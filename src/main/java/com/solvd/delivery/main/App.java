@@ -1,14 +1,31 @@
 package com.solvd.delivery.main;
 
+import com.solvd.delivery.enums.OrderStatus;
+import com.solvd.delivery.exceptions.UnknownOrderStatusException;
 import com.solvd.delivery.enums.TicketPriority;
 import com.solvd.delivery.enums.TicketStatus;
 import com.solvd.delivery.models.*;
-import com.solvd.delivery.mysqlImpl.*;
+import com.solvd.delivery.dao.mysqlImpl.*;
+import com.solvd.delivery.services.DeliveryService;
+import com.solvd.delivery.services.interfaces.IDeliveryService;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.solvd.delivery.services.interfaces.IPromotionService;
+import com.solvd.delivery.services.PromotionService;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class App {
     private static final Logger logger = LogManager.getLogger(App.class);
@@ -33,6 +50,10 @@ public class App {
         testInventoryDAO();
         testReviewDAO();
         testCourierDAO();
+        testPromotionService();
+        testDeliveryService();
+        testOrderXMLDeserialization();
+        testOrderXMLSerialization();
     }
 
     private void testUserDAO() {
@@ -399,7 +420,154 @@ public class App {
         System.out.println("Deleted Courier with ID=" + newCourier.getId());
     }
 
+    private void testPromotionService() {
+        logger.info("===== Testing PromotionService =====");
 
+        UserDAO userDAO = new UserDAO();
+        PromotionDAO promotionDAO = new PromotionDAO();
+
+        // Example: pick first user and promotion from DB
+        User user = userDAO.getAll().stream().findFirst().orElse(null);
+        Promotion promotion = promotionDAO.getAll().stream().findFirst().orElse(null);
+
+        if (user == null || promotion == null) {
+            logger.warn("No users or promotions found in DB. Skipping PromotionService test.");
+            return;
+        }
+
+        // Example: user has completed 2 deliveries
+        int deliveryCount = 2;
+        String promoCode = promotion.getCode(); // Use the promotion code from DB
+
+        IPromotionService promoService = new PromotionService(promoCode, deliveryCount, user, promotion);
+        double discount = promoService.calculateDiscount();
+
+        logger.info("User: {} {}", user.getFirstName(), user.getLastName());
+        logger.info("Delivery Count: {}", deliveryCount);
+        logger.info("Promo Code: {}", promoCode);
+        logger.info("Calculated Discount: {}%", discount * 100);
+    }
+
+    private void testDeliveryService() {
+        logger.info("===== Testing DeliveryService =====");
+
+        ShipmentDAO shipmentDAO = new ShipmentDAO();
+        Shipment shipment = shipmentDAO.getAll().stream().findFirst().orElse(null);
+
+        if (shipment == null) {
+            logger.warn("No shipments found in DB. Skipping DeliveryService test.");
+            return;
+        }
+
+        IDeliveryService deliveryService = new DeliveryService();
+        double hours = deliveryService.calculateEstimatedDeliveryTime(shipment);
+        boolean delayed = deliveryService.isDelayed(shipment);
+
+        logger.info("Shipment ID: {}", shipment.getId());
+        logger.info("Estimated Delivery Time: {} hours", hours);
+        logger.info("Is Delayed: {}", delayed);
+    }
+
+    // ===== New Methods for Order XML =====
+
+    private void testOrderXMLDeserialization() {
+        logger.info("===== Testing Order XML Deserialization (SAX) =====");
+
+        try {
+            File xmlFile = new File("src/main/resources/orders.xml");
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+
+            List<Order> orders = new ArrayList<>();
+
+            DefaultHandler handler = new DefaultHandler() {
+                Order currentOrder = null;
+                StringBuilder content = new StringBuilder();
+
+                @Override
+                public void startElement(String uri, String localName, String qName, Attributes attributes) {
+                    if ("order".equals(qName)) {
+                        currentOrder = new Order();
+                    }
+                    content.setLength(0); // clear buffer
+                }
+
+                @Override
+                public void characters(char[] ch, int start, int length) {
+                    content.append(ch, start, length);
+                }
+
+                @Override
+                public void endElement(String uri, String localName, String qName) {
+                    if (currentOrder != null) {
+                        String value = content.toString().trim();
+                        switch (qName) {
+                            case "id" -> currentOrder.setId(Long.parseLong(value));
+                            case "orderDate" -> currentOrder.setOrderDate(LocalDateTime.parse(value));
+                            case "status" -> {
+                                try {
+                                    currentOrder.setStatus(OrderStatus.fromLabel(value));
+                                } catch (UnknownOrderStatusException e) {
+                                    logger.warn("Unknown OrderStatus '{}', defaulting to PENDING", value);
+                                    currentOrder.setStatus(OrderStatus.PENDING);
+                                }
+                            }
+                            case "totalAmount" -> currentOrder.setTotalAmount(Double.parseDouble(value));
+                            case "userId" -> currentOrder.setUserId(Long.parseLong(value));
+                            case "addressId" -> currentOrder.setAddressId(Long.parseLong(value));
+                            case "order" -> orders.add(currentOrder);
+                        }
+                    }
+                }
+            };
+
+            saxParser.parse(xmlFile, handler);
+
+            logger.info("Deserialized Orders from XML:");
+            orders.forEach(o -> logger.info(
+                    "Order ID={}, Date={}, Status={}, Total={}, UserID={}, AddressID={}",
+                    o.getId(), o.getOrderDate(), o.getStatus().getLabel(),
+                    o.getTotalAmount(), o.getUserId(), o.getAddressId()
+            ));
+
+        } catch (Exception e) {
+            logger.error("Error deserializing orders.xml", e);
+        }
+    }
+
+
+    private void testOrderXMLSerialization() {
+        logger.info("===== Testing Order XML Serialization =====");
+
+        // Fetch orders from DB as an example
+        OrderDAO orderDAO = new OrderDAO();
+        List<Order> orders = orderDAO.getAll();
+
+        File outputFile = new File("src/main/resources/orders_output.xml");
+        List<String> lines = new ArrayList<>();
+        lines.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        lines.add("<orders>");
+
+        for (Order order : orders) {
+            lines.add("  <order>");
+            lines.add("    <id>" + order.getId() + "</id>");
+            lines.add("    <orderDate>" + order.getOrderDate() + "</orderDate>");
+            lines.add("    <status>" + order.getStatus().name() + "</status>");
+            lines.add("    <totalAmount>" + order.getTotalAmount() + "</totalAmount>");
+            lines.add("    <userId>" + order.getUserId() + "</userId>");
+            lines.add("    <addressId>" + order.getAddressId() + "</addressId>");
+            lines.add("  </order>");
+        }
+
+        lines.add("</orders>");
+
+        try {
+            FileUtils.writeLines(outputFile, lines);
+            logger.info("Orders successfully serialized to " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            logger.error("Error writing orders to XML", e);
+        }
+    }
 
     public static void main(String[] args) {
         new App();

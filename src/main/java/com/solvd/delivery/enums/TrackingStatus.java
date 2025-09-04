@@ -1,5 +1,7 @@
 package com.solvd.delivery.enums;
 
+import com.solvd.delivery.exceptions.UnknownTrackingStatusException;
+
 public enum TrackingStatus {
     CREATED(1, "Created"),
     IN_TRANSIT(2, "In Transit"),
@@ -18,21 +20,21 @@ public enum TrackingStatus {
     public int getId() { return id; }
     public String getLabel() { return label; }
 
-    public static TrackingStatus fromLabel(String label) {
+    public static TrackingStatus fromLabel(String label) throws UnknownTrackingStatusException {
         for (TrackingStatus status : values()) {
             if (status.label.equalsIgnoreCase(label)) {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Unknown TrackingStatus label: " + label);
+        throw new UnknownTrackingStatusException("Unknown TrackingStatus label: " + label);
     }
 
-    public static TrackingStatus fromId(int id) {
+    public static TrackingStatus fromId(int id) throws UnknownTrackingStatusException {
         for (TrackingStatus status : values()) {
             if (status.id == id) {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Unknown TrackingStatus id: " + id);
+        throw new UnknownTrackingStatusException("Unknown TrackingStatus id: " + id);
     }
 }

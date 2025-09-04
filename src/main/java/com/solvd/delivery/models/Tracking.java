@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Tracking {
     private long id;
-    private String trackingNumber;
+    private String trackingNumber;  // matches DB column 'tracking_number'
     private TrackingStatus status;
     private LocalDateTime lastUpdate;
     private long shipmentId;
