@@ -1,5 +1,6 @@
 package com.solvd.delivery.enums;
 
+import com.solvd.delivery.exceptions.UnknownTransactionStatusException;
 import java.util.Arrays;
 
 public enum TransactionStatus {
@@ -23,17 +24,17 @@ public enum TransactionStatus {
         return label;
     }
 
-    public static TransactionStatus fromLabel(String label) {
+    public static TransactionStatus fromLabel(String label) throws UnknownTransactionStatusException {
         return Arrays.stream(TransactionStatus.values())
                 .filter(s -> s.label.equalsIgnoreCase(label) || s.name().equalsIgnoreCase(label))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown TransactionStatus label: " + label));
+                .orElseThrow(() -> new UnknownTransactionStatusException("Unknown TransactionStatus label: " + label));
     }
 
-    public static TransactionStatus fromId(int id) {
+    public static TransactionStatus fromId(int id) throws UnknownTransactionStatusException {
         return Arrays.stream(TransactionStatus.values())
                 .filter(s -> s.id == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown TransactionStatus id: " + id));
+                .orElseThrow(() -> new UnknownTransactionStatusException("Unknown TransactionStatus id: " + id));
     }
 }

@@ -1,4 +1,4 @@
-package com.solvd.delivery.mysqlImpl;
+package com.solvd.delivery.dao.mysqlImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

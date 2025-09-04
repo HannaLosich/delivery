@@ -1,5 +1,6 @@
 package com.solvd.delivery.enums;
 
+import com.solvd.delivery.exceptions.UnknownDiscountTypeException;
 
 public enum DiscountType {
     PERCENTAGE(1, "Percentage"),
@@ -17,8 +18,10 @@ public enum DiscountType {
     public int getId() { return id; }
     public String getLabel() { return label; }
 
-    public static DiscountType fromLabel(String label) {
-        if (label == null) throw new IllegalArgumentException("Label is null");
+    public static DiscountType fromLabel(String label) throws UnknownDiscountTypeException {
+        if (label == null) {
+            throw new UnknownDiscountTypeException("Label cannot be null");
+        }
 
         switch (label.toLowerCase()) {
             case "percentage":
@@ -29,15 +32,14 @@ public enum DiscountType {
             case "free_shipping":
                 return FREE_SHIPPING;
             default:
-                throw new IllegalArgumentException("Unknown DiscountType label: " + label);
+                throw new UnknownDiscountTypeException("Unknown DiscountType label: " + label);
         }
     }
 
-
-    public static DiscountType fromId(int id) {
+    public static DiscountType fromId(int id) throws UnknownDiscountTypeException {
         for (DiscountType type : values()) {
             if (type.id == id) return type;
         }
-        throw new IllegalArgumentException("Unknown DiscountType id: " + id);
+        throw new UnknownDiscountTypeException("Unknown DiscountType id: " + id);
     }
 }

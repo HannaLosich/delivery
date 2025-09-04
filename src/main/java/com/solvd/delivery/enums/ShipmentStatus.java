@@ -1,5 +1,7 @@
 package com.solvd.delivery.enums;
 
+import com.solvd.delivery.exceptions.UnknownShipmentStatusException;
+
 public enum ShipmentStatus {
     DELIVERED(1, "Delivered"),
     DELAYED(2, "Delayed"),
@@ -16,12 +18,12 @@ public enum ShipmentStatus {
     public int getId() { return id; }
     public String getLabel() { return label; }
 
-    public static ShipmentStatus fromLabel(String label) {
+    public static ShipmentStatus fromLabel(String label) throws UnknownShipmentStatusException {
         for (ShipmentStatus s : values()) {
             if (s.label.equalsIgnoreCase(label)) {
                 return s;
             }
         }
-        throw new IllegalArgumentException("Unknown ShipmentStatus label: " + label);
+        throw new UnknownShipmentStatusException("Unknown ShipmentStatus label: " + label);
     }
 }

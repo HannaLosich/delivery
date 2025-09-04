@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orders>
+  <order>
+    <id>1</id>
+    <orderDate>2025-09-01T23:31:59</orderDate>
+    <status>PENDING</status>
+    <totalAmount>109.98</totalAmount>
+    <userId>1</userId>
+    <addressId>1</addressId>
+  </order>
+  <order>
+    <id>2</id>
+    <orderDate>2025-09-01T23:31:59</orderDate>
+    <status>SHIPPED</status>
+    <totalAmount>29.99</totalAmount>
+    <userId>2</userId>
+    <addressId>2</addressId>
+  </order>
+</orders>
