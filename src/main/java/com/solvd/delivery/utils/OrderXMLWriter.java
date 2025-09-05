@@ -1,65 +1,38 @@
 package com.solvd.delivery.utils;
 
 import com.solvd.delivery.models.Order;
+import org.apache.commons.io.FileUtils;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class OrderXMLWriter {
 
     public static void writeOrders(List<Order> orders, String outputFile) {
+        StringBuilder sb = new StringBuilder();
+
+        // XML declaration
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<orders>\n");
+
+        // Loop through orders
+        for (Order o : orders) {
+            sb.append("  <order>\n");
+            sb.append("    <id>").append(o.getId()).append("</id>\n");
+            sb.append("    <orderDate>").append(o.getOrderDate()).append("</orderDate>\n");
+            sb.append("    <status>").append(o.getStatus().name()).append("</status>\n");
+            sb.append("    <totalAmount>").append(o.getTotalAmount()).append("</totalAmount>\n");
+            sb.append("    <userId>").append(o.getUserId()).append("</userId>\n");
+            sb.append("    <addressId>").append(o.getAddressId()).append("</addressId>\n");
+            sb.append("  </order>\n");
+        }
+
+        sb.append("</orders>");
+
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            Document doc = builder.newDocument();
-            Element root = doc.createElement("orders");
-            doc.appendChild(root);
-
-            for (Order o : orders) {
-                Element orderElem = doc.createElement("order");
-
-                Element id = doc.createElement("id");
-                id.appendChild(doc.createTextNode(String.valueOf(o.getId())));
-                orderElem.appendChild(id);
-
-                Element date = doc.createElement("orderDate");
-                date.appendChild(doc.createTextNode(o.getOrderDate().toString()));
-                orderElem.appendChild(date);
-
-                Element status = doc.createElement("status");
-                status.appendChild(doc.createTextNode(o.getStatus().name()));
-                orderElem.appendChild(status);
-
-                Element amount = doc.createElement("totalAmount");
-                amount.appendChild(doc.createTextNode(String.valueOf(o.getTotalAmount())));
-                orderElem.appendChild(amount);
-
-                Element userId = doc.createElement("userId");
-                userId.appendChild(doc.createTextNode(String.valueOf(o.getUserId())));
-                orderElem.appendChild(userId);
-
-                Element addressId = doc.createElement("addressId");
-                addressId.appendChild(doc.createTextNode(String.valueOf(o.getAddressId())));
-                orderElem.appendChild(addressId);
-
-                root.appendChild(orderElem);
-            }
-
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(new DOMSource(doc), new StreamResult(new File(outputFile)));
-
-        } catch (Exception e) {
+            FileUtils.writeStringToFile(new File(outputFile), sb.toString(), "UTF-8");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

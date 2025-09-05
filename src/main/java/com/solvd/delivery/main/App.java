@@ -8,12 +8,11 @@ import com.solvd.delivery.models.*;
 import com.solvd.delivery.dao.mysqlImpl.*;
 import com.solvd.delivery.services.DeliveryService;
 import com.solvd.delivery.services.interfaces.IDeliveryService;
-import org.apache.commons.io.FileUtils;
+import com.solvd.delivery.utils.OrderXMLWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -543,31 +542,16 @@ public class App {
         OrderDAO orderDAO = new OrderDAO();
         List<Order> orders = orderDAO.getAll();
 
-        File outputFile = new File("src/main/resources/orders_output.xml");
-        List<String> lines = new ArrayList<>();
-        lines.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        lines.add("<orders>");
-
-        for (Order order : orders) {
-            lines.add("  <order>");
-            lines.add("    <id>" + order.getId() + "</id>");
-            lines.add("    <orderDate>" + order.getOrderDate() + "</orderDate>");
-            lines.add("    <status>" + order.getStatus().name() + "</status>");
-            lines.add("    <totalAmount>" + order.getTotalAmount() + "</totalAmount>");
-            lines.add("    <userId>" + order.getUserId() + "</userId>");
-            lines.add("    <addressId>" + order.getAddressId() + "</addressId>");
-            lines.add("  </order>");
-        }
-
-        lines.add("</orders>");
+        String outputFile = "src/main/resources/orders_output.xml";
 
         try {
-            FileUtils.writeLines(outputFile, lines);
-            logger.info("Orders successfully serialized to " + outputFile.getAbsolutePath());
-        } catch (IOException e) {
+            OrderXMLWriter.writeOrders(orders, outputFile);
+            logger.info("Orders successfully serialized to " + new File(outputFile).getAbsolutePath());
+        } catch (Exception e) {
             logger.error("Error writing orders to XML", e);
         }
     }
+
 
     public static void main(String[] args) {
         new App();
