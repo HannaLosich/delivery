@@ -4,6 +4,8 @@ import com.solvd.delivery.dao.IShipmentDAO;
 import com.solvd.delivery.exceptions.UnknownShipmentStatusException;
 import com.solvd.delivery.models.Shipment;
 import com.solvd.delivery.enums.ShipmentStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public class ShipmentDAO extends GenericDAO<Shipment> implements IShipmentDAO<Shipment> {
 
+    private static final Logger logger = LogManager.getLogger(ShipmentDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO shipments (shipment_date, delivery_date, status, order_id) VALUES (?, ?, ?, ?)";
     private static final String UPDATE_SQL =
@@ -61,8 +64,9 @@ public class ShipmentDAO extends GenericDAO<Shipment> implements IShipmentDAO<Sh
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Shipment: {}", shipment, e);
         }
+
     }
 
     @Override
@@ -79,8 +83,9 @@ public class ShipmentDAO extends GenericDAO<Shipment> implements IShipmentDAO<Sh
             return shipment;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Shipment: {}", shipment, e);
         }
+
         return null;
     }
 
@@ -94,8 +99,10 @@ public class ShipmentDAO extends GenericDAO<Shipment> implements IShipmentDAO<Sh
             while (rs.next()) shipments.add(mapRow(rs));
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching shipments by orderId: {}", orderId, e);
         }
+
+
         return shipments;
     }
 }

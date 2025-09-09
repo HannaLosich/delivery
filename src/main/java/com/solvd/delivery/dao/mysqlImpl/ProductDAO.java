@@ -2,12 +2,16 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IProductDAO;
 import com.solvd.delivery.models.Product;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Product> {
+
+    private static final Logger logger = LogManager.getLogger(ProductDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO Products (name, description, price, sku) VALUES (?, ?, ?, ?)";
@@ -50,8 +54,9 @@ public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Produ
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Product: {}", product, e);
         }
+
     }
 
     @Override
@@ -69,8 +74,9 @@ public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Produ
             return product;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Product: {}", product, e);
         }
+
         return null;
     }
 
@@ -87,8 +93,9 @@ public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Produ
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Product by SKU={}", sku, e);
         }
+
         return null;
     }
 }

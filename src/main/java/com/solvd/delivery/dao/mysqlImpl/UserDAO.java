@@ -2,12 +2,15 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IUserDAO;
 import com.solvd.delivery.models.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.List;
 
 public class UserDAO extends GenericDAO<User> implements IUserDAO<User> {
 
+    private static final Logger logger = LogManager.getLogger(UserDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO Users (first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?)";
     private static final String UPDATE_SQL =
@@ -51,8 +54,9 @@ public class UserDAO extends GenericDAO<User> implements IUserDAO<User> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting User: {}", user, e);
         }
+
     }
 
     @Override
@@ -69,8 +73,9 @@ public class UserDAO extends GenericDAO<User> implements IUserDAO<User> {
             return user;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating User: {}", user, e);
         }
+
         return null;
     }
 
@@ -86,8 +91,9 @@ public class UserDAO extends GenericDAO<User> implements IUserDAO<User> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving User by email: {}", email, e);
         }
+
         return null;
     }
 
@@ -103,8 +109,9 @@ public class UserDAO extends GenericDAO<User> implements IUserDAO<User> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving User by phone number: {}", phoneNumber, e);
         }
+
         return null;
     }
 }

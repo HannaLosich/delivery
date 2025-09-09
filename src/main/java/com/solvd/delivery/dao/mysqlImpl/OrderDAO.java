@@ -4,10 +4,14 @@ import com.solvd.delivery.dao.IOrderDAO;
 import com.solvd.delivery.exceptions.UnknownOrderStatusException;
 import com.solvd.delivery.models.Order;
 import com.solvd.delivery.enums.OrderStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
 public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
+
+    private static final Logger logger = LogManager.getLogger(OrderDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO orders (order_date, status, total_amount, user_id, address_id) VALUES (?, ?, ?, ?, ?)";
@@ -64,7 +68,7 @@ public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Order: {}", order, e);
         }
     }
 
@@ -84,7 +88,7 @@ public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
             return order;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Order: {}", order, e);
         }
         return null;
     }
@@ -101,7 +105,7 @@ public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Order by userId={}", userId, e);
         }
         return null;
     }
@@ -118,7 +122,7 @@ public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Order by addressId={}", addressId, e);
         }
         return null;
     }

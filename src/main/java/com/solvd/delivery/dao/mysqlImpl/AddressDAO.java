@@ -2,10 +2,14 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IAddressDAO;
 import com.solvd.delivery.models.Address;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
 public class AddressDAO extends GenericDAO<Address> implements IAddressDAO<Address> {
+
+    private static final Logger logger = LogManager.getLogger(AddressDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO addresses (street, city, state, country, postal_code, user_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -54,7 +58,7 @@ public class AddressDAO extends GenericDAO<Address> implements IAddressDAO<Addre
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Address: {}", address, e);
         }
     }
 
@@ -74,7 +78,7 @@ public class AddressDAO extends GenericDAO<Address> implements IAddressDAO<Addre
             return address;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Address: {}", address, e);
         }
         return null;
     }
@@ -91,7 +95,7 @@ public class AddressDAO extends GenericDAO<Address> implements IAddressDAO<Addre
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Address by userId={}", userId, e);
         }
         return null;
     }

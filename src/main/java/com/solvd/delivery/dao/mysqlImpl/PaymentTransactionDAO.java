@@ -4,12 +4,15 @@ import com.solvd.delivery.dao.IPaymentTransactionDAO;
 import com.solvd.delivery.exceptions.UnknownTransactionStatusException;
 import com.solvd.delivery.models.PaymentTransaction;
 import com.solvd.delivery.enums.TransactionStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentTransactionDAO extends GenericDAO<PaymentTransaction> implements IPaymentTransactionDAO<PaymentTransaction> {
+    private static final Logger logger = LogManager.getLogger(PaymentTransactionDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO payment_transactions (transaction_reference, transaction_date, status, payment_id) VALUES (?, ?, ?, ?)";
@@ -61,8 +64,9 @@ public class PaymentTransactionDAO extends GenericDAO<PaymentTransaction> implem
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting PaymentTransaction: {}", transaction, e);
         }
+
     }
 
     @Override
@@ -79,8 +83,9 @@ public class PaymentTransactionDAO extends GenericDAO<PaymentTransaction> implem
             return transaction;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating PaymentTransaction: {}", transaction, e);
         }
+
         return null;
     }
 
@@ -98,8 +103,9 @@ public class PaymentTransactionDAO extends GenericDAO<PaymentTransaction> implem
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching PaymentTransactions for paymentId={}", paymentId, e);
         }
+
         return transactions;
     }
 }

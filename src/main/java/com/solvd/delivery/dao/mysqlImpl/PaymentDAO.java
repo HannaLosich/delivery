@@ -4,10 +4,14 @@ import com.solvd.delivery.dao.IPaymentDAO;
 import com.solvd.delivery.exceptions.UnknownPaymentMethodException;
 import com.solvd.delivery.models.Payment;
 import com.solvd.delivery.enums.PaymentMethod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
 public class PaymentDAO extends GenericDAO<Payment> implements IPaymentDAO<Payment> {
+
+    private static final Logger logger = LogManager.getLogger(PaymentDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO Payments (amount, payment_method, payment_date, order_id) VALUES (?, ?, ?, ?)";
@@ -59,7 +63,7 @@ public class PaymentDAO extends GenericDAO<Payment> implements IPaymentDAO<Payme
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Payment: {}", payment, e);
         }
     }
 
@@ -78,7 +82,7 @@ public class PaymentDAO extends GenericDAO<Payment> implements IPaymentDAO<Payme
             return payment;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Payment: {}", payment, e);
         }
         return null;
     }
@@ -96,7 +100,7 @@ public class PaymentDAO extends GenericDAO<Payment> implements IPaymentDAO<Payme
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Payment for orderId={}", orderId, e);
         }
         return null;
     }

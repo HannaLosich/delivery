@@ -2,10 +2,14 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.ICourierDAO;
 import com.solvd.delivery.models.Courier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
 public class CourierDAO extends GenericDAO<Courier> implements ICourierDAO {
+
+    private static final Logger logger = LogManager.getLogger(CourierDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO couriers (name, contact_number, email, shipment_id, user_id) VALUES (?, ?, ?, ?, ?)";
@@ -50,7 +54,7 @@ public class CourierDAO extends GenericDAO<Courier> implements ICourierDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Courier: {}", courier, e);
         }
     }
 
@@ -70,7 +74,7 @@ public class CourierDAO extends GenericDAO<Courier> implements ICourierDAO {
             return courier;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Courier: {}", courier, e);
         }
         return null;
     }

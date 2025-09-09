@@ -4,12 +4,14 @@ import com.solvd.delivery.dao.IPromotionDAO;
 import com.solvd.delivery.enums.DiscountType;
 import com.solvd.delivery.exceptions.UnknownDiscountTypeException;
 import com.solvd.delivery.models.Promotion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PromotionDAO extends GenericDAO<Promotion> implements IPromotionDAO<Promotion> {
+
+    private static final Logger logger = LogManager.getLogger(PromotionDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO promotions (code, description, discount_type, discount_value, start_date, end_date) " +
@@ -65,8 +67,9 @@ public class PromotionDAO extends GenericDAO<Promotion> implements IPromotionDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Promotion: {}", promotion, e);
         }
+
     }
 
     @Override
@@ -86,8 +89,9 @@ public class PromotionDAO extends GenericDAO<Promotion> implements IPromotionDAO
             return promotion;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Promotion: {}", promotion, e);
         }
+
         return null;
     }
 
@@ -104,8 +108,9 @@ public class PromotionDAO extends GenericDAO<Promotion> implements IPromotionDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching Promotion by code={}", code, e);
         }
+
         return null;
     }
 }
