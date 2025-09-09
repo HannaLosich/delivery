@@ -1,12 +1,17 @@
 package com.solvd.delivery.dao.mysqlImpl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GenericDAO<T> extends AMySQLDB {
 
-    protected abstract String getTableName(); // Table name provided by subclass
+    private static final Logger logger = LogManager.getLogger(GenericDAO.class);
+
+    protected abstract String getTableName();          // Table name provided by subclass
     protected abstract T mapRow(ResultSet rs) throws SQLException; // Row mapping implemented by subclass
 
     // ====== Common Methods ======
@@ -17,13 +22,14 @@ public abstract class GenericDAO<T> extends AMySQLDB {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return mapRow(rs);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error getting entity by ID {} from table {}", id, getTableName(), e);
         }
         return null;
     }
@@ -40,7 +46,7 @@ public abstract class GenericDAO<T> extends AMySQLDB {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error getting all entities from table {}", getTableName(), e);
         }
         return results;
     }
@@ -51,14 +57,15 @@ public abstract class GenericDAO<T> extends AMySQLDB {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            logger.info("Removed {} row(s) with ID {} from table {}", rowsAffected, id, getTableName());
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error removing entity by ID {} from table {}", id, getTableName(), e);
         }
     }
 
-    //  NOTE: insert() and update() are NOT generic
+    // NOTE: insert() and update() are NOT generic
     // because they depend on entity-specific fields
-    // Subclasses will still implement those themselves.
+    // Subclasses will implement those themselves.
 }

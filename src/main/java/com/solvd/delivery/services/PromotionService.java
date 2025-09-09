@@ -2,14 +2,13 @@ package com.solvd.delivery.services;
 
 import com.solvd.delivery.models.Promotion;
 import com.solvd.delivery.models.User;
-
 import com.solvd.delivery.services.interfaces.IPromotionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PromotionService implements IPromotionService {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger("PromotionService");
 
     private String promoCode;
     private int deliveryCount;  // e.g., how many deliveries user has completed
@@ -49,7 +48,7 @@ public class PromotionService implements IPromotionService {
     @Override
     public double calculateDiscount() {
         boolean firstDelivery = deliveryCount == 1;
-        boolean everyThirdDelivery = deliveryCount > 0 && deliveryCount % 3 == 0; // example
+        boolean everyThirdDelivery = deliveryCount > 0 && deliveryCount % 3 == 0;
         boolean validPromo = isValidPromoCode();
 
         if (firstDelivery) return 0.15;       // 15% for first delivery
@@ -60,7 +59,7 @@ public class PromotionService implements IPromotionService {
     }
 
     public void printPromotionDetails() {
-        LOGGER.info("User: " + user.getFirstName() + " " + user.getLastName());
+        LOGGER.info("User: " + (user != null ? user.getFirstName() + " " + user.getLastName() : "N/A"));
         LOGGER.info("Delivery Count: " + deliveryCount);
         LOGGER.info("Promo Code Entered: " + promoCode);
         LOGGER.info("Discount Applied: " + (calculateDiscount() * 100) + "%");

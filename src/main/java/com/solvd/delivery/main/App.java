@@ -8,7 +8,10 @@ import com.solvd.delivery.models.*;
 import com.solvd.delivery.dao.mysqlImpl.*;
 import com.solvd.delivery.services.DeliveryService;
 import com.solvd.delivery.services.interfaces.IDeliveryService;
+import com.solvd.delivery.utils.OrderSAXParser;
+import com.solvd.delivery.utils.OrderXMLReader;
 import com.solvd.delivery.utils.OrderXMLWriter;
+import com.solvd.delivery.utils.OrderXMLWriterJAXB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,6 +56,9 @@ public class App {
         testDeliveryService();
         testOrderXMLDeserialization();
         testOrderXMLSerialization();
+        testJAXBSerialization();
+        testJAXBDeserialization();
+
     }
 
     private void testUserDAO() {
@@ -473,54 +479,7 @@ public class App {
         logger.info("===== Testing Order XML Deserialization (SAX) =====");
 
         try {
-            File xmlFile = new File("src/main/resources/orders.xml");
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser saxParser = factory.newSAXParser();
-
-            List<Order> orders = new ArrayList<>();
-
-            DefaultHandler handler = new DefaultHandler() {
-                Order currentOrder = null;
-                StringBuilder content = new StringBuilder();
-
-                @Override
-                public void startElement(String uri, String localName, String qName, Attributes attributes) {
-                    if ("order".equals(qName)) {
-                        currentOrder = new Order();
-                    }
-                    content.setLength(0); // clear buffer
-                }
-
-                @Override
-                public void characters(char[] ch, int start, int length) {
-                    content.append(ch, start, length);
-                }
-
-                @Override
-                public void endElement(String uri, String localName, String qName) {
-                    if (currentOrder != null) {
-                        String value = content.toString().trim();
-                        switch (qName) {
-                            case "id" -> currentOrder.setId(Long.parseLong(value));
-                            case "orderDate" -> currentOrder.setOrderDate(LocalDateTime.parse(value));
-                            case "status" -> {
-                                try {
-                                    currentOrder.setStatus(OrderStatus.fromLabel(value));
-                                } catch (UnknownOrderStatusException e) {
-                                    logger.warn("Unknown OrderStatus '{}', defaulting to PENDING", value);
-                                    currentOrder.setStatus(OrderStatus.PENDING);
-                                }
-                            }
-                            case "totalAmount" -> currentOrder.setTotalAmount(Double.parseDouble(value));
-                            case "userId" -> currentOrder.setUserId(Long.parseLong(value));
-                            case "addressId" -> currentOrder.setAddressId(Long.parseLong(value));
-                            case "order" -> orders.add(currentOrder);
-                        }
-                    }
-                }
-            };
-
-            saxParser.parse(xmlFile, handler);
+            List<Order> orders = OrderSAXParser.parseOrders("orders.xml"); // uses SAX parser with logger
 
             logger.info("Deserialized Orders from XML:");
             orders.forEach(o -> logger.info(
@@ -535,22 +494,54 @@ public class App {
     }
 
 
+
     private void testOrderXMLSerialization() {
         logger.info("===== Testing Order XML Serialization =====");
 
-        // Fetch orders from DB as an example
+        // Fetch orders from DB
         OrderDAO orderDAO = new OrderDAO();
         List<Order> orders = orderDAO.getAll();
 
         String outputFile = "src/main/resources/orders_output.xml";
 
-        try {
-            OrderXMLWriter.writeOrders(orders, outputFile);
-            logger.info("Orders successfully serialized to " + new File(outputFile).getAbsolutePath());
-        } catch (Exception e) {
-            logger.error("Error writing orders to XML", e);
+        // Just call OrderXMLWriter, which already logs success/error
+        OrderXMLWriter.writeOrders(orders, outputFile);
+    }
+
+    // ===== JAXB =====
+
+    private void testJAXBSerialization() {
+        logger.info("===== Testing JAXB Serialization =====");
+
+        // Example: create some sample orders
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order(101, LocalDateTime.now(), OrderStatus.PENDING, 120.50, 1, 10));
+        orders.add(new Order(102, LocalDateTime.now().minusDays(1), OrderStatus.SHIPPED, 89.99, 2, 11));
+
+        OrdersWrapper wrapper = new OrdersWrapper(orders);
+
+        String outputFile = "src/main/resources/orders_jaxb.xml";
+        OrderXMLWriterJAXB.writeOrdersToFile(wrapper, outputFile);
+
+        logger.info("Orders written to {}", outputFile);
+    }
+
+    private void testJAXBDeserialization() {
+        logger.info("===== Testing JAXB Deserialization =====");
+
+        String inputFile = "src/main/resources/orders_jaxb.xml";
+        OrdersWrapper wrapper = OrderXMLReader.readOrdersFromFile(inputFile);
+
+        if (wrapper != null && wrapper.getOrders() != null) {
+            wrapper.getOrders().forEach(order ->
+                    logger.info("Deserialized Order: {}", order));
+        } else {
+            logger.warn("No orders found in {}", inputFile);
         }
     }
+
+
+
 
 
     public static void main(String[] args) {

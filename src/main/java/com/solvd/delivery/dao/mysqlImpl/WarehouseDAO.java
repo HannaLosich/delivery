@@ -2,12 +2,15 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IWarehouseDAO;
 import com.solvd.delivery.models.Warehouse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.List;
 
 public class WarehouseDAO extends GenericDAO<Warehouse> implements IWarehouseDAO<Warehouse> {
 
+    private static final Logger logger = LogManager.getLogger(WarehouseDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO Warehouses (name, location) VALUES (?, ?)";
     private static final String UPDATE_SQL =
@@ -43,8 +46,9 @@ public class WarehouseDAO extends GenericDAO<Warehouse> implements IWarehouseDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Warehouse: {}", warehouse, e);
         }
+
     }
 
     @Override
@@ -59,8 +63,9 @@ public class WarehouseDAO extends GenericDAO<Warehouse> implements IWarehouseDAO
             return warehouse;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Warehouse: {}", warehouse, e);
         }
+
         return null;
     }
 }

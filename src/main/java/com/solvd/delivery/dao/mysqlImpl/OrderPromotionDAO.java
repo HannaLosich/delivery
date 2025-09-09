@@ -2,12 +2,14 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IOrderPromotionDAO;
 import com.solvd.delivery.models.OrderPromotion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OrderPromotionDAO extends GenericDAO<OrderPromotion> implements IOrderPromotionDAO<OrderPromotion> {
+
+    private static final Logger logger = LogManager.getLogger(OrderPromotionDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO Order_promotions (order_id, promotion_id) VALUES (?, ?)";
@@ -44,7 +46,7 @@ public class OrderPromotionDAO extends GenericDAO<OrderPromotion> implements IOr
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting OrderPromotion: {}", op, e);
         }
     }
 
@@ -59,7 +61,7 @@ public class OrderPromotionDAO extends GenericDAO<OrderPromotion> implements IOr
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating OrderPromotion: {}", op, e);
         }
     }
 }

@@ -4,12 +4,15 @@ import com.solvd.delivery.dao.ITrackingDAO;
 import com.solvd.delivery.enums.TrackingStatus;
 import com.solvd.delivery.exceptions.UnknownTrackingStatusException;
 import com.solvd.delivery.models.Tracking;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.List;
 
 public class TrackingDAO extends GenericDAO<Tracking> implements ITrackingDAO<Tracking> {
 
+    private static final Logger logger = LogManager.getLogger(TrackingDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO tracking (tracking_number, status, last_update, shipment_id) VALUES (?, ?, ?, ?)";
     private static final String UPDATE_SQL =
@@ -60,8 +63,9 @@ public class TrackingDAO extends GenericDAO<Tracking> implements ITrackingDAO<Tr
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Tracking: {}", tracking, e);
         }
+
     }
 
     @Override
@@ -78,8 +82,9 @@ public class TrackingDAO extends GenericDAO<Tracking> implements ITrackingDAO<Tr
             return tracking;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Tracking: {}", tracking, e);
         }
+
         return null;
     }
 
@@ -95,8 +100,9 @@ public class TrackingDAO extends GenericDAO<Tracking> implements ITrackingDAO<Tr
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving trackings for shipmentId={}", shipmentId, e);
         }
+
         return trackings;
     }
 }

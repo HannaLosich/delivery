@@ -2,13 +2,15 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IReviewDAO;
 import com.solvd.delivery.models.Review;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> {
 
+    private static final Logger logger = LogManager.getLogger(ReviewDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO Reviews (rating, comment, created_at, user_id, shipment_id) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_SQL =
@@ -51,8 +53,9 @@ public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> 
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Review: {}", review, e);
         }
+
     }
 
     @Override
@@ -70,8 +73,9 @@ public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> 
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Review: {}", review, e);
         }
+
         return review;
     }
 }

@@ -2,11 +2,14 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.ITicketMessageDAO;
 import com.solvd.delivery.models.TicketMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.List;
 
 public class TicketMessageDAO extends GenericDAO<TicketMessage> implements ITicketMessageDAO<TicketMessage> {
+
+    private static final Logger logger = LogManager.getLogger(TicketMessageDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO TicketMessages (message_text, created_at, user_id) VALUES (?, ?, ?)";
@@ -45,7 +48,7 @@ public class TicketMessageDAO extends GenericDAO<TicketMessage> implements ITick
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting TicketMessage: {}", message, e);
         }
     }
 
@@ -62,7 +65,7 @@ public class TicketMessageDAO extends GenericDAO<TicketMessage> implements ITick
             return message;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating TicketMessage: {}", message, e);
         }
         return null;
     }

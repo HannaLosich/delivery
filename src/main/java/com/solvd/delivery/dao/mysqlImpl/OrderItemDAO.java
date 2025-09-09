@@ -2,12 +2,16 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IOrderItemDAO;
 import com.solvd.delivery.models.OrderItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderItemDAO extends GenericDAO<OrderItem> implements IOrderItemDAO<OrderItem> {
+
+    private static final Logger logger = LogManager.getLogger(OrderItemDAO.class);
 
     private static final String INSERT_SQL =
             "INSERT INTO order_items (quantity, unit_price, order_id, product_id) VALUES (?, ?, ?, ?)";
@@ -52,7 +56,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> implements IOrderItemDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting OrderItem: {}", item, e);
         }
     }
 
@@ -70,7 +74,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> implements IOrderItemDAO
             return item;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating OrderItem: {}", item, e);
         }
         return null;
     }
@@ -88,7 +92,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> implements IOrderItemDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching OrderItems by orderId={}", orderId, e);
         }
         return items;
     }
@@ -106,7 +110,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> implements IOrderItemDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error fetching OrderItems by productId={}", productId, e);
         }
         return items;
     }

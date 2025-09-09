@@ -4,6 +4,8 @@ import com.solvd.delivery.dao.ISupportTicketDAO;
 import com.solvd.delivery.enums.TicketPriority;
 import com.solvd.delivery.enums.TicketStatus;
 import com.solvd.delivery.models.SupportTicket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public class SupportTicketDAO extends GenericDAO<SupportTicket> implements ISupportTicketDAO<SupportTicket> {
 
+    private static final Logger logger = LogManager.getLogger(SupportTicketDAO.class);
     private static final String INSERT_SQL =
             "INSERT INTO Support_tickets (subject, status, priority, created_at, updated_at, Users_user_id) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_SQL =
@@ -54,8 +57,9 @@ public class SupportTicketDAO extends GenericDAO<SupportTicket> implements ISupp
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting SupportTicket: {}", ticket, e);
         }
+
     }
 
     @Override
@@ -73,8 +77,9 @@ public class SupportTicketDAO extends GenericDAO<SupportTicket> implements ISupp
             return ticket;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating SupportTicket: {}", ticket, e);
         }
+
         return null;
     }
 }

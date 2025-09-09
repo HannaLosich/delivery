@@ -2,14 +2,17 @@ package com.solvd.delivery.dao.mysqlImpl;
 
 import com.solvd.delivery.dao.IInventoryDAO;
 import com.solvd.delivery.models.Inventory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
 public class InventoryDAO extends GenericDAO<Inventory> implements IInventoryDAO<Inventory> {
 
+    private static final Logger logger = LogManager.getLogger(InventoryDAO.class);
+
     private static final String INSERT_SQL =
             "INSERT INTO inventory (stock_quantity, last_updated, warehouse_id, product_id) VALUES (?, ?, ?, ?)";
-
     private static final String UPDATE_SQL =
             "UPDATE inventory SET stock_quantity = ?, last_updated = ?, warehouse_id = ?, product_id = ? WHERE id = ?";
 
@@ -48,7 +51,7 @@ public class InventoryDAO extends GenericDAO<Inventory> implements IInventoryDAO
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error inserting Inventory: {}", inventory, e);
         }
     }
 
@@ -67,7 +70,7 @@ public class InventoryDAO extends GenericDAO<Inventory> implements IInventoryDAO
             return inventory;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating Inventory: {}", inventory, e);
         }
         return null;
     }
