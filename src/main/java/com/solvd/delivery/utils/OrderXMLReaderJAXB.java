@@ -1,13 +1,17 @@
 package com.solvd.delivery.utils;
 
 import com.solvd.delivery.models.OrdersWrapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
-public class OrderXMLReader {
+public class OrderXMLReaderJAXB {
+
+    private static final Logger logger = LogManager.getLogger(OrderXMLReaderJAXB.class);
 
     public static OrdersWrapper readOrdersFromFile(String filePath) {
         try {
@@ -21,7 +25,7 @@ public class OrderXMLReader {
             return (OrdersWrapper) unmarshaller.unmarshal(new File(filePath));
 
         } catch (JAXBException e) {
-            e.printStackTrace();
+            logger.error("Failed to unmarshal XML file: {}", filePath, e);
             return null;
         }
     }

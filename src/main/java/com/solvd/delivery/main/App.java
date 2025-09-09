@@ -9,7 +9,7 @@ import com.solvd.delivery.dao.mysqlImpl.*;
 import com.solvd.delivery.services.DeliveryService;
 import com.solvd.delivery.services.interfaces.IDeliveryService;
 import com.solvd.delivery.utils.OrderSAXParser;
-import com.solvd.delivery.utils.OrderXMLReader;
+import com.solvd.delivery.utils.OrderXMLReaderJAXB;
 import com.solvd.delivery.utils.OrderXMLWriter;
 import com.solvd.delivery.utils.OrderXMLWriterJAXB;
 import org.apache.logging.log4j.LogManager;
@@ -530,7 +530,7 @@ public class App {
         logger.info("===== Testing JAXB Deserialization =====");
 
         String inputFile = "src/main/resources/orders_jaxb.xml";
-        OrdersWrapper wrapper = OrderXMLReader.readOrdersFromFile(inputFile);
+        OrdersWrapper wrapper = OrderXMLReaderJAXB.readOrdersFromFile(inputFile);
 
         if (wrapper != null && wrapper.getOrders() != null) {
             wrapper.getOrders().forEach(order ->
