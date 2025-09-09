@@ -5,39 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9be1625c-1388-4dc1-a002-0109a12da02a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/models/OrdersWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/LocalDateTimeAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLWriterJAXB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/AMySQLDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/AMySQLDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/AddressDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/AddressDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/CourierDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/CourierDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/GenericDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/GenericDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/InventoryDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/InventoryDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderItemDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderPromotionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/OrderPromotionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PaymentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PaymentDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PaymentTransactionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PaymentTransactionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ProductDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ProductDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PromotionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/PromotionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ReviewDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ReviewDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ShipmentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/ShipmentDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/SupportTicketDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/SupportTicketDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/TicketMessageDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/TicketMessageDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/TrackingDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/TrackingDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/WarehouseDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/dao/mysqlImpl/WarehouseDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery.iws" beforeDir="false" afterPath="$PROJECT_DIR$/delivery.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/main/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/main/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/models/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/models/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/services/DeliveryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/services/DeliveryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/services/PromotionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/services/PromotionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderSAXParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderSAXParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/orders.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/orders.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/orders_output.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/orders_output.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/utils/OrderXMLReaderJAXB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/orders_jaxb.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/orders_jaxb.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
