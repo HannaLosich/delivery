@@ -8,10 +8,7 @@ import com.solvd.delivery.models.*;
 import com.solvd.delivery.dao.mysqlImpl.*;
 import com.solvd.delivery.services.DeliveryService;
 import com.solvd.delivery.services.interfaces.IDeliveryService;
-import com.solvd.delivery.utils.OrderSAXParser;
-import com.solvd.delivery.utils.OrderXMLReaderJAXB;
-import com.solvd.delivery.utils.OrderXMLWriter;
-import com.solvd.delivery.utils.OrderXMLWriterJAXB;
+import com.solvd.delivery.utils.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,6 +55,8 @@ public class App {
         testOrderXMLSerialization();
         testJAXBSerialization();
         testJAXBDeserialization();
+        testJacksonSerialization();
+        testJacksonDeserialization();
 
     }
 
@@ -541,6 +540,52 @@ public class App {
     }
 
 
+    private void testJacksonSerialization() {
+        logger.info("===== Testing Jackson JSON Serialization =====");
+
+        try {
+            // Example: create some sample orders
+            List<Order> orders = new ArrayList<>();
+            orders.add(new Order(201, LocalDateTime.now(), OrderStatus.PENDING, 150.75, 1, 10));
+            orders.add(new Order(202, LocalDateTime.now().minusDays(2), OrderStatus.SHIPPED, 99.99, 2, 11));
+
+            String outputFile = "src/main/resources/orders.json";
+            OrderJSONWriter writer = new OrderJSONWriter();
+            writer.writeOrders(new File(outputFile), orders);
+
+            logger.info("Orders successfully written to JSON: {}", outputFile);
+
+        } catch (Exception e) {
+            logger.error("Error during Jackson JSON serialization", e);
+        }
+    }
+
+    private void testJacksonDeserialization() {
+        logger.info("===== Testing Jackson JSON Deserialization =====");
+
+        try {
+            String inputFile = "src/main/resources/orders.json";
+            OrderJSONReader reader = new OrderJSONReader();
+            List<Order> orders = reader.readOrders(new File(inputFile));
+
+            if (orders != null && !orders.isEmpty()) {
+                orders.forEach(order -> logger.info(
+                        "Deserialized Order: ID={}, Date={}, Status={}, Total={}, UserID={}, AddressID={}",
+                        order.getId(),
+                        order.getOrderDate(),
+                        order.getStatus().getLabel(),
+                        order.getTotalAmount(),
+                        order.getUserId(),
+                        order.getAddressId()
+                ));
+            } else {
+                logger.warn("No orders found in JSON file: {}", inputFile);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error during Jackson JSON deserialization", e);
+        }
+    }
 
 
 

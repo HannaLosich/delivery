@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9be1625c-1388-4dc1-a002-0109a12da02a" name="Changes" comment="" />
+    <list default="true" id="9be1625c-1388-4dc1-a002-0109a12da02a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/order.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery.iml" beforeDir="false" afterPath="$PROJECT_DIR$/delivery.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/delivery.ipr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/delivery.iws" beforeDir="false" afterPath="$PROJECT_DIR$/delivery.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/models/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/solvd/delivery/models/Order.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -246,19 +253,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;JAXB&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/hlosich/maven/delivery&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Jackson",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/hlosich/maven/delivery",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration selected="false" default="true" type="Applet" factoryName="Applet">
       <module name="" />

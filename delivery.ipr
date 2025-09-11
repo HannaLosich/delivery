@@ -107,6 +107,54 @@
     <mapping directory="" vcs="Git" />
   </component>
   <component name="libraryTable">
+    <library name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.17.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.fasterxml.jackson.core" artifactId="jackson-annotations" version="2.17.0" baseVersion="2.17.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.17.0/jackson-annotations-2.17.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.17.0/jackson-annotations-2.17.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.17.0/jackson-annotations-2.17.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.fasterxml.jackson.core:jackson-core:2.17.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.fasterxml.jackson.core" artifactId="jackson-core" version="2.17.0" baseVersion="2.17.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.17.0/jackson-core-2.17.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.17.0/jackson-core-2.17.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.17.0/jackson-core-2.17.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.fasterxml.jackson.core:jackson-databind:2.17.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.fasterxml.jackson.core" artifactId="jackson-databind" version="2.17.0" baseVersion="2.17.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.0/jackson-databind-2.17.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.0/jackson-databind-2.17.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.17.0/jackson-databind-2.17.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0" type="java-imported" external-system-id="Maven">
+      <properties groupId="com.fasterxml.jackson.datatype" artifactId="jackson-datatype-jsr310" version="2.17.0" baseVersion="2.17.0" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.0/jackson-datatype-jsr310-2.17.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.0/jackson-datatype-jsr310-2.17.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.0/jackson-datatype-jsr310-2.17.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: com.google.protobuf:protobuf-java:3.21.9" type="java-imported" external-system-id="Maven">
       <properties groupId="com.google.protobuf" artifactId="protobuf-java" version="3.21.9" baseVersion="3.21.9" />
       <CLASSES>
@@ -225,6 +273,18 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.bytebuddy:byte-buddy:1.14.9" type="java-imported" external-system-id="Maven">
+      <properties groupId="net.bytebuddy" artifactId="byte-buddy" version="1.14.9" baseVersion="1.14.9" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.14.9/byte-buddy-1.14.9.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.14.9/byte-buddy-1.14.9-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.14.9/byte-buddy-1.14.9-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-dbcp2:2.13.0" type="java-imported" external-system-id="Maven">

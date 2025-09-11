@@ -1,5 +1,8 @@
 package com.solvd.delivery.models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.solvd.delivery.enums.OrderStatus;
 import com.solvd.delivery.utils.LocalDateTimeAdapter;
 
@@ -9,6 +12,7 @@ import java.time.LocalDateTime;
 
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true) // ✅ Ignore extra fields in JSON (_comment, etc.)
 public class Order {
 
     @XmlAttribute
@@ -30,7 +34,7 @@ public class Order {
     @XmlElement(name = "addressId")
     private long addressId;
 
-    // Default constructor required by JAXB
+    // Default constructor required by JAXB & Jackson
     public Order() {}
 
     public Order(long id, LocalDateTime orderDate, OrderStatus status, double totalAmount, long userId, long addressId) {
@@ -42,51 +46,64 @@ public class Order {
         this.addressId = addressId;
     }
 
-    // Getters and setters
+    // ===== Jackson-friendly Getters/Setters =====
+
+    @JsonGetter("id")
     public long getId() {
         return id;
     }
 
+    @JsonSetter("id")
     public void setId(long id) {
         this.id = id;
     }
 
+    @JsonGetter("orderDate")
     public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
+    @JsonSetter("orderDate")
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
+    @JsonGetter("status")
     public OrderStatus getStatus() {
         return status;
     }
 
+    @JsonSetter("status")
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
+    @JsonGetter("totalAmount")
     public double getTotalAmount() {
         return totalAmount;
     }
 
+    @JsonSetter("totalAmount")
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
+    @JsonGetter("userId")
     public long getUserId() {
         return userId;
     }
 
+    @JsonSetter("userId")
     public void setUserId(long userId) {
         this.userId = userId;
     }
 
+    @JsonGetter("addressId")
     public long getAddressId() {
         return addressId;
     }
 
+    @JsonSetter("addressId")
     public void setAddressId(long addressId) {
         this.addressId = addressId;
     }
