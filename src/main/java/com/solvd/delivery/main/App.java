@@ -1,7 +1,11 @@
 package com.solvd.delivery.main;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import java.io.InputStream;
+import com.solvd.delivery.dao.mybatis.UserMapper;
 import com.solvd.delivery.enums.OrderStatus;
-import com.solvd.delivery.exceptions.UnknownOrderStatusException;
 import com.solvd.delivery.enums.TicketPriority;
 import com.solvd.delivery.enums.TicketStatus;
 import com.solvd.delivery.models.*;
@@ -20,19 +24,27 @@ import java.util.List;
 import com.solvd.delivery.services.interfaces.IPromotionService;
 import com.solvd.delivery.services.PromotionService;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 public class App {
     private static final Logger logger = LogManager.getLogger(App.class);
+    private SqlSessionFactory sqlSessionFactory;
+
 
     public App() {
         logger.info("🚀 Starting Delivery Service App...");
+
+        //  Load MyBatis config once
+        String resource = "mybatis-config.xml";
+        try (InputStream inputStream = App.class.getClassLoader().getResourceAsStream(resource)) {
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        } catch (Exception e) {
+            logger.error("Failed to load MyBatis configuration", e);
+            throw new RuntimeException(e);
+        }
+
         testDAOs();
     }
+
 
     private void testDAOs() {
         testUserDAO();
@@ -60,14 +72,59 @@ public class App {
 
     }
 
+
     private void testUserDAO() {
-        logger.info("===== Testing UserDAO =====");
-        UserDAO dao = new UserDAO();
-        dao.getAll().forEach(u -> logger.info(
-                "User: ID={}, FirstName={}, LastName={}, Email={}, Phone={}",
-                u.getId(), u.getFirstName(), u.getLastName(), u.getEmail(), u.getPhoneNumber()
-        ));
+        logger.info("===== Testing UserMapper (MyBatis) =====");
+
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+
+            // Fetch all existing users
+            List<User> users = userMapper.getAll();
+            for (User user : users) {
+                logger.info("User: ID={}, FirstName={}, LastName={}, Email={}, Phone={}",
+                        user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getPhoneNumber());
+            }
+
+            // Insert a new user with a unique email
+            String uniqueEmail = "charlie" + System.currentTimeMillis() + "@example.com";
+            String uniquePhone = "+1111111" + (System.currentTimeMillis() % 1000);
+            // Use no-args constructor and setters
+            User newUser = new User();
+            newUser.setFirstName("Charlie");
+            newUser.setLastName("Brown");
+            newUser.setEmail(uniqueEmail);
+            newUser.setPhoneNumber(uniquePhone);
+
+            userMapper.insert(newUser);
+            session.commit();
+            logger.info("Inserted new User with ID={}", newUser.getId());
+
+            // Fetch user by unique email
+            User fetchedUser = userMapper.getByEmail(uniqueEmail);
+            logger.info("Fetched User by Email: {} {}", fetchedUser.getFirstName(), fetchedUser.getLastName());
+
+            // Update user details
+            fetchedUser.setLastName("Updated");
+            userMapper.update(fetchedUser);
+            session.commit();
+            logger.info("Updated User ID={}", fetchedUser.getId());
+
+            // Delete user
+            userMapper.delete(fetchedUser.getId());
+            session.commit();
+            logger.info("Deleted User ID={}", fetchedUser.getId());
+
+        } catch (Exception e) {
+            logger.error("Error testing UserMapper", e);
+        }
     }
+
+
 
     private void testAddressDAO() {
         logger.info("===== Testing AddressDAO =====");
@@ -586,6 +643,7 @@ public class App {
             logger.error("Error during Jackson JSON deserialization", e);
         }
     }
+
 
 
 
