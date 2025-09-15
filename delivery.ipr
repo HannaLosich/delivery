@@ -371,6 +371,18 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/jaxb/txw2/2.3.5/txw2-2.3.5-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: org.mybatis:mybatis:3.5.15" type="java-imported" external-system-id="Maven">
+      <properties groupId="org.mybatis" artifactId="mybatis" version="3.5.15" baseVersion="3.5.15" />
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mybatis/mybatis/3.5.15/mybatis-3.5.15.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mybatis/mybatis/3.5.15/mybatis-3.5.15-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mybatis/mybatis/3.5.15/mybatis-3.5.15-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: org.projectlombok:lombok:1.18.38" type="java-imported" external-system-id="Maven">
       <properties groupId="org.projectlombok" artifactId="lombok" version="1.18.38" baseVersion="1.18.38" />
       <CLASSES>
