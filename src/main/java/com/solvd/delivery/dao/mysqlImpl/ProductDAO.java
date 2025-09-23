@@ -19,6 +19,10 @@ public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Produ
             "UPDATE Products SET name=?, description=?, price=?, sku=? WHERE id=?";
     private static final String SELECT_BY_SKU_SQL =
             "SELECT * FROM Products WHERE sku=?";
+    private static final String SELECT_BY_ORDER_ID_SQL =
+            "SELECT p.* FROM Products p " +
+                    "JOIN order_products op ON p.id = op.product_id " +
+                    "WHERE op.order_id=?";
 
     @Override
     protected String getTableName() {
@@ -78,6 +82,25 @@ public class ProductDAO extends GenericDAO<Product> implements IProductDAO<Produ
         }
 
         return null;
+    }
+
+    @Override
+
+    public List<Product> getByOrderId(long orderId) {
+        List<Product> products = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ORDER_ID_SQL)) {
+
+            stmt.setLong(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                products.add(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            logger.error("Error fetching Products by orderId={}", orderId, e);
+        }
+        return products;
     }
 
     @Override

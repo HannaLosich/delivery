@@ -6,15 +6,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> {
 
     private static final Logger logger = LogManager.getLogger(ReviewDAO.class);
+
     private static final String INSERT_SQL =
             "INSERT INTO Reviews (rating, comment, created_at, user_id, shipment_id) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_SQL =
             "UPDATE Reviews SET rating = ?, comment = ?, created_at = ?, user_id = ?, shipment_id = ? WHERE id=?";
+    private static final String SELECT_BY_SHIPMENT_ID_SQL =
+            "SELECT * FROM Reviews WHERE shipment_id=?";
 
     @Override
     protected String getTableName() {
@@ -55,7 +59,6 @@ public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> 
         } catch (SQLException e) {
             logger.error("Error inserting Review: {}", review, e);
         }
-
     }
 
     @Override
@@ -77,5 +80,23 @@ public class ReviewDAO extends GenericDAO<Review> implements IReviewDAO<Review> 
         }
 
         return review;
+    }
+
+    // ✅ New method to fetch reviews by shipment
+    public List<Review> getByShipmentId(long shipmentId) {
+        List<Review> reviews = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(SELECT_BY_SHIPMENT_ID_SQL)) {
+
+            ps.setLong(1, shipmentId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                reviews.add(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            logger.error("Error fetching Reviews by shipmentId={}", shipmentId, e);
+        }
+        return reviews;
     }
 }
