@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
 
@@ -94,21 +96,23 @@ public class OrderDAO extends GenericDAO<Order> implements IOrderDAO<Order> {
     }
 
     @Override
-    public Order getByUserId(long userId) {
+    public List<Order> getByUserId(long userId) {
+        List<Order> orders = new ArrayList<>();
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(SELECT_BY_USER_ID_SQL)) {
 
             stmt.setLong(1, userId);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return mapRow(rs);
+            while (rs.next()) {
+                orders.add(mapRow(rs));
             }
 
         } catch (SQLException e) {
-            logger.error("Error fetching Order by userId={}", userId, e);
+            logger.error("Error fetching Orders by userId={}", userId, e);
         }
-        return null;
+        return orders;
     }
+
 
     @Override
     public Order getByAddressId(long addressId) {

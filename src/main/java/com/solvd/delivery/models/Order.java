@@ -9,10 +9,11 @@ import com.solvd.delivery.utils.LocalDateTimeAdapter;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties(ignoreUnknown = true) // ✅ Ignore extra fields in JSON (_comment, etc.)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
 
     @XmlAttribute
@@ -34,10 +35,18 @@ public class Order {
     @XmlElement(name = "addressId")
     private long addressId;
 
-    // Default constructor required by JAXB & Jackson
+    // Relationships
+    @XmlElement(name = "products")
+    private List<Product> products;
+
+    @XmlElement(name = "shipments")
+    private List<Shipment> shipments;
+
+    // Default constructor
     public Order() {}
 
-    public Order(long id, LocalDateTime orderDate, OrderStatus status, double totalAmount, long userId, long addressId) {
+    public Order(long id, LocalDateTime orderDate, OrderStatus status,
+                 double totalAmount, long userId, long addressId) {
         this.id = id;
         this.orderDate = orderDate;
         this.status = status;
@@ -108,6 +117,26 @@ public class Order {
         this.addressId = addressId;
     }
 
+    @JsonGetter("products")
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    @JsonSetter("products")
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    @JsonGetter("shipments")
+    public List<Shipment> getShipments() {
+        return shipments;
+    }
+
+    @JsonSetter("shipments")
+    public void setShipments(List<Shipment> shipments) {
+        this.shipments = shipments;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -117,6 +146,8 @@ public class Order {
                 ", totalAmount=" + totalAmount +
                 ", userId=" + userId +
                 ", addressId=" + addressId +
+                ", products=" + (products != null ? products.size() : 0) +
+                ", shipments=" + (shipments != null ? shipments.size() : 0) +
                 '}';
     }
 }

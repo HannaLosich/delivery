@@ -1,28 +1,30 @@
 package com.solvd.delivery.main;
 
+import com.solvd.delivery.enums.*;
+import com.solvd.delivery.services.factories.PaymentProcessorFactory;
+import com.solvd.delivery.services.impl.PaymentService;
+import com.solvd.delivery.services.interfaces.IPaymentService;
+import com.solvd.delivery.services.interfaces.IUserService;
+import com.solvd.delivery.services.factories.UserServiceFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import java.io.InputStream;
-import com.solvd.delivery.dao.mybatis.UserMapper;
-import com.solvd.delivery.enums.OrderStatus;
-import com.solvd.delivery.enums.TicketPriority;
-import com.solvd.delivery.enums.TicketStatus;
 import com.solvd.delivery.models.*;
 import com.solvd.delivery.dao.mysqlImpl.*;
-import com.solvd.delivery.services.DeliveryService;
-import com.solvd.delivery.services.interfaces.IDeliveryService;
 import com.solvd.delivery.utils.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.solvd.delivery.dao.mybatis.UserMapper;
+import com.solvd.delivery.services.impl.ProductService;
+import com.solvd.delivery.models.Product;
+
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.solvd.delivery.services.interfaces.IPromotionService;
-import com.solvd.delivery.services.PromotionService;
 
 
 public class App {
@@ -61,20 +63,105 @@ public class App {
         testInventoryDAO();
         testReviewDAO();
         testCourierDAO();
-        testPromotionService();
-        testDeliveryService();
         testOrderXMLDeserialization();
         testOrderXMLSerialization();
         testJAXBSerialization();
         testJAXBDeserialization();
         testJacksonSerialization();
         testJacksonDeserialization();
+        testPaymentService();
+        testProductService();
 
     }
 
 
+    private void testPaymentService() {
+        logger.info("===== Testing PaymentService =====");
+
+        IPaymentService paymentService = new PaymentService();
+
+        // Fetch an example payment from DB
+        PaymentDAO paymentDAO = new PaymentDAO();
+        List<Payment> payments = paymentDAO.getAll();
+        if (payments.isEmpty()) {
+            logger.warn("No payments found to test.");
+            return;
+        }
+
+        Payment payment = payments.get(0);
+
+        // Ensure payment has a date before insertion
+        if (payment.getPaymentDate() == null) {
+            payment.setPaymentDate(LocalDateTime.now());
+        }
+
+        paymentService.pay(payment.getPaymentMethod(), payment);
+
+        logger.info("Processed payment ID={} for OrderID={}", payment.getId(), payment.getOrderId());
+    }
+
+
+    // ===== PaymentProcessorFactory Verification =====
+    private void testPaymentProcessorFactory() {
+        logger.info("===== Testing PaymentProcessorFactory =====");
+
+        for (PaymentMethod method : PaymentMethod.values()) {
+            try {
+                var processor = PaymentProcessorFactory.getProcessor(method);
+                logger.info("Created processor for {} -> {}", method, processor.getClass().getSimpleName());
+
+                // Create a dummy payment for testing
+                Payment dummyPayment = new Payment(
+                        0,                               // id
+                        50.0,                            // amount
+                        method,                          // payment method
+                        LocalDateTime.now(),             // payment date
+                        1                                // orderId (example)
+                );
+
+                processor.processPayment(dummyPayment);
+                logger.info("Processed dummy payment of {} via {}", dummyPayment.getAmount(), method);
+
+            } catch (Exception e) {
+                logger.error("Failed to create processor for method {}", method, e);
+            }
+        }
+    }
+
+
+    private void testProductService() {
+        logger.info("===== Testing ProductService with Promotions =====");
+
+        ProductService productService = new ProductService();
+
+        // Fetch all products
+        List<Product> products = productService.getAllProducts();
+        if (products.isEmpty()) {
+            logger.warn("No products found.");
+            return;
+        }
+
+        // Log all products
+        for (Product p : products) {
+            logger.info("Product: ID={}, Name={}, Price={}", p.getId(), p.getName(), p.getPrice());
+        }
+
+        // Example: apply a promotion to the first product
+        Product firstProduct = products.get(0);
+        String promoCode = "SUMMER2025"; // replace with an existing code in DB
+
+        boolean applied = productService.applyPromotionToProduct(firstProduct.getSku(), promoCode);
+
+        if (applied) {
+            logger.info("Promotion {} successfully applied to product {}", promoCode, firstProduct.getName());
+        } else {
+            logger.warn("Failed to apply promotion {} to product {}", promoCode, firstProduct.getName());
+        }
+    }
+
+
     private void testUserDAO() {
-        logger.info("===== Testing UserMapper (MyBatis) =====");
+        logger.info("===== Testing UserMapper (MyBatis) with Role-Aware Services =====");
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
             UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -82,37 +169,52 @@ public class App {
             // Fetch all existing users
             List<User> users = userMapper.getAll();
             for (User user : users) {
-                logger.info("User: ID={}, FirstName={}, LastName={}, Email={}, Phone={}",
+                logger.info("User: ID={}, FirstName={}, LastName={}, Email={}, Phone={}, Role={}",
                         user.getId(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
-                        user.getPhoneNumber());
+                        user.getPhoneNumber(),
+                        user.getRole());
             }
 
-            // Insert a new user with a unique email
+            // Insert a new user with unique email
             String uniqueEmail = "charlie" + System.currentTimeMillis() + "@example.com";
             String uniquePhone = "+1111111" + (System.currentTimeMillis() % 1000);
-            // Use no-args constructor and setters
+
             User newUser = new User();
             newUser.setFirstName("Charlie");
             newUser.setLastName("Brown");
             newUser.setEmail(uniqueEmail);
             newUser.setPhoneNumber(uniquePhone);
+            newUser.setRole(UserRole.CUSTOMER);
 
             userMapper.insert(newUser);
             session.commit();
-            logger.info("Inserted new User with ID={}", newUser.getId());
+            logger.info("Inserted new User with ID={} and Role={}", newUser.getId(), newUser.getRole());
 
-            // Fetch user by unique email
+            // Fetch user by email
             User fetchedUser = userMapper.getByEmail(uniqueEmail);
-            logger.info("Fetched User by Email: {} {}", fetchedUser.getFirstName(), fetchedUser.getLastName());
+            logger.info("Fetched User by Email: {} {}, Role={}",
+                    fetchedUser.getFirstName(),
+                    fetchedUser.getLastName(),
+                    fetchedUser.getRole());
+
+            // Get appropriate service based on role
+            UserRole role = UserRole.valueOf(fetchedUser.getRole().name());
+            logger.info("User role: {}", role.name());
+            IUserService service = UserServiceFactory.getService(role);
+            service.performRoleSpecificAction(fetchedUser); // example method
 
             // Update user details
             fetchedUser.setLastName("Updated");
+            fetchedUser.setRole(UserRole.ADMIN);
             userMapper.update(fetchedUser);
             session.commit();
-            logger.info("Updated User ID={}", fetchedUser.getId());
+            logger.info("Updated User ID={} to LastName={} and Role={}",
+                    fetchedUser.getId(),
+                    fetchedUser.getLastName(),
+                    fetchedUser.getRole());
 
             // Delete user
             userMapper.delete(fetchedUser.getId());
@@ -120,9 +222,10 @@ public class App {
             logger.info("Deleted User ID={}", fetchedUser.getId());
 
         } catch (Exception e) {
-            logger.error("Error testing UserMapper", e);
+            logger.error("Error testing UserMapper with role-aware services", e);
         }
     }
+
 
 
 
@@ -481,53 +584,7 @@ public class App {
         System.out.println("Deleted Courier with ID=" + newCourier.getId());
     }
 
-    private void testPromotionService() {
-        logger.info("===== Testing PromotionService =====");
 
-        UserDAO userDAO = new UserDAO();
-        PromotionDAO promotionDAO = new PromotionDAO();
-
-        // Example: pick first user and promotion from DB
-        User user = userDAO.getAll().stream().findFirst().orElse(null);
-        Promotion promotion = promotionDAO.getAll().stream().findFirst().orElse(null);
-
-        if (user == null || promotion == null) {
-            logger.warn("No users or promotions found in DB. Skipping PromotionService test.");
-            return;
-        }
-
-        // Example: user has completed 2 deliveries
-        int deliveryCount = 2;
-        String promoCode = promotion.getCode(); // Use the promotion code from DB
-
-        IPromotionService promoService = new PromotionService(promoCode, deliveryCount, user, promotion);
-        double discount = promoService.calculateDiscount();
-
-        logger.info("User: {} {}", user.getFirstName(), user.getLastName());
-        logger.info("Delivery Count: {}", deliveryCount);
-        logger.info("Promo Code: {}", promoCode);
-        logger.info("Calculated Discount: {}%", discount * 100);
-    }
-
-    private void testDeliveryService() {
-        logger.info("===== Testing DeliveryService =====");
-
-        ShipmentDAO shipmentDAO = new ShipmentDAO();
-        Shipment shipment = shipmentDAO.getAll().stream().findFirst().orElse(null);
-
-        if (shipment == null) {
-            logger.warn("No shipments found in DB. Skipping DeliveryService test.");
-            return;
-        }
-
-        IDeliveryService deliveryService = new DeliveryService();
-        double hours = deliveryService.calculateEstimatedDeliveryTime(shipment);
-        boolean delayed = deliveryService.isDelayed(shipment);
-
-        logger.info("Shipment ID: {}", shipment.getId());
-        logger.info("Estimated Delivery Time: {} hours", hours);
-        logger.info("Is Delayed: {}", delayed);
-    }
 
     // ===== New Methods for Order XML =====
 

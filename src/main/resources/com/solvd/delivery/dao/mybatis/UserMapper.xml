@@ -2,39 +2,58 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.solvd.delivery.dao.mybatis.UserMapper">
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO Users (first_name, last_name, email, phone_number)
-        VALUES (#{firstName}, #{lastName}, #{email}, #{phoneNumber})
+    <!-- Result mapping -->
+    <resultMap id="UserResultMap" type="com.solvd.delivery.models.User">
+        <id property="id" column="id"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="role" column="role"/>
+    </resultMap>
+
+    <!-- Select all users -->
+    <select id="getAll" resultMap="UserResultMap">
+        SELECT id, first_name, last_name, email, phone_number, role
+        FROM Users
+    </select>
+
+    <!-- Select by ID -->
+    <select id="getById" resultMap="UserResultMap" parameterType="long">
+        SELECT id, first_name, last_name, email, phone_number, role
+        FROM Users
+        WHERE id = #{id}
+    </select>
+
+    <!-- Select by Email -->
+    <select id="getByEmail" resultMap="UserResultMap" parameterType="String">
+        SELECT id, first_name, last_name, email, phone_number, role
+        FROM Users
+        WHERE email = #{email}
+    </select>
+
+    <!-- Insert user -->
+    <insert id="insert" parameterType="com.solvd.delivery.models.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Users (first_name, last_name, email, phone_number, role)
+        VALUES (#{firstName}, #{lastName}, #{email}, #{phoneNumber}, #{role})
     </insert>
 
-    <update id="update">
+    <!-- Update user -->
+    <update id="update" parameterType="com.solvd.delivery.models.User">
         UPDATE Users
-        SET first_name=#{firstName},
-        last_name=#{lastName},
-        email=#{email},
-        phone_number=#{phoneNumber}
-        WHERE id=#{id}
+        SET first_name = #{firstName},
+        last_name = #{lastName},
+        email = #{email},
+        phone_number = #{phoneNumber},
+        role = #{role}
+        WHERE id = #{id}
     </update>
 
-    <select id="getByEmail" resultType="com.solvd.delivery.models.User">
-        SELECT * FROM Users WHERE email = #{email}
-    </select>
-
-    <select id="getByPhoneNumber" resultType="com.solvd.delivery.models.User">
-        SELECT * FROM Users WHERE phone_number = #{phoneNumber}
-    </select>
-
-    <select id="getById" resultType="com.solvd.delivery.models.User">
-        SELECT * FROM Users WHERE id = #{id}
-    </select>
-
-    <select id="getAll" resultType="com.solvd.delivery.models.User">
-        SELECT * FROM Users
-    </select>
-
-    <delete id="delete">
+    <!-- Delete user -->
+    <delete id="delete" parameterType="long">
         DELETE FROM Users WHERE id = #{id}
     </delete>
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.delivery.dao.mybatis.ProductMapper">
+
+    <resultMap id="ProductResultMap" type="com.solvd.delivery.models.Product">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="description" column="description" />
+        <result property="price" column="price" />
+        <result property="sku" column="sku" />
+    </resultMap>
+
+    <select id="getAll" resultMap="ProductResultMap">
+        SELECT * FROM Products
+    </select>
+
+    <select id="getBySku" parameterType="string" resultMap="ProductResultMap">
+        SELECT * FROM Products WHERE sku = #{sku}
+    </select>
+
+    <insert id="insert" parameterType="com.solvd.delivery.models.Product" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Products (name, description, price, sku)
+        VALUES (#{name}, #{description}, #{price}, #{sku})
+    </insert>
+
+    <update id="update" parameterType="com.solvd.delivery.models.Product">
+        UPDATE Products
+        SET name = #{name}, description = #{description}, price = #{price}, sku = #{sku}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM Products WHERE id = #{id}
+    </delete>
+
+</mapper>
+

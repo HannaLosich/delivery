@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.delivery.dao.mybatis.PaymentMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Payments (amount, payment_method, payment_date, order_id)
+        VALUES (#{amount}, #{paymentMethod}, #{paymentDate}, #{orderId})
+    </insert>
+
+    <update id="update" parameterType="com.solvd.delivery.models.Payment">
+        UPDATE Payments
+        SET amount=#{amount},
+        payment_method=#{paymentMethod},
+        payment_date=#{paymentDate},
+        order_id=#{orderId}
+        WHERE id=#{id}
+    </update>
+
+    <select id="getById" resultType="com.solvd.delivery.models.Payment">
+        SELECT * FROM Payments WHERE id = #{id}
+    </select>
+
+    <select id="getByOrderId" resultType="com.solvd.delivery.models.Payment">
+        SELECT * FROM Payments WHERE order_id = #{orderId}
+    </select>
+
+    <select id="getAll" resultType="com.solvd.delivery.models.Payment">
+        SELECT * FROM Payments
+    </select>
+
+    <delete id="delete">
+        DELETE FROM Payments WHERE id = #{id}
+    </delete>
+
+</mapper>
